@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* Thin, subtle scrollbar for a more premium feel */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #cfc4ff;
+  border-radius: 9999px;
+}
+
+@layer components {
+  /* Reusable gradient text used across headings */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-600 via-fuchsia-500 to-brand-400 bg-300% animate-gradient;
+  }
+
+  /* Primary call-to-action button */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5
+      font-medium text-white shadow-card transition-all duration-300
+      hover:bg-brand-700 hover:shadow-glow active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5
+      font-medium text-slate-700 transition-all duration-300 hover:border-brand-300 hover:text-brand-700 active:scale-95;
+  }
+
+  .input-field {
+    @apply w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-800
+      outline-none transition-all duration-200 placeholder:text-slate-400
+      focus:border-brand-400 focus:ring-4 focus:ring-brand-100;
+  }
+}

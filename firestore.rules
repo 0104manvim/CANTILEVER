@@ -1,0 +1,40 @@
+// firestore.rules
+//
+// Copy this into: Firebase Console -> Firestore Database -> Rules
+// (or deploy via the Firebase CLI: `firebase deploy --only firestore:rules`)
+//
+// Model: anyone (even signed-out visitors) can READ posts, since this is a
+// public blog. Only signed-in users can CREATE posts, and only the
+// original author can UPDATE or DELETE their own post.
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /posts/{postId} {
+      // Public read access — the blog feed is visible to everyone.
+      allow read: if true;
+
+      // Only authenticated users can create a post, and the
+      // authorId they set MUST match their own uid (prevents
+      // spoofing someone else's authorship).
+      allow create: if request.auth != null
+                    && request.resource.data.authorId == request.auth.uid
+                    && request.resource.data.title is string
+                    && request.resource.data.title.size() > 0
+                    && request.resource.data.content is string
+                    && request.resource.data.content.size() > 0;
+
+      // Only the original author can update or delete their post.
+      // `resource.data` refers to the EXISTING document being modified.
+      allow update: if request.auth != null
+                    && request.auth.uid == resource.data.authorId
+                    // Prevent an author from reassigning the post to someone else.
+                    && request.resource.data.authorId == resource.data.authorId;
+
+      allow delete: if request.auth != null
+                    && request.auth.uid == resource.data.authorId;
+    }
+  }
+}
